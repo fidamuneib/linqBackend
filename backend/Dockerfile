@@ -1,27 +1,28 @@
-# Use official Python image
-FROM python:3.11-slim
+# Use official Python base image
+FROM python:3.12-slim
 
 # Set environment variables
-ENV PYTHONDONTWRITEBYTECODE 1
-ENV PYTHONUNBUFFERED 1
+ENV PYTHONDONTWRITEBYTECODE=1
+ENV PYTHONUNBUFFERED=1
 
-# Set working directory
+# Set work directory
 WORKDIR /app
 
-# Install system dependencies
-RUN apt-get update \
-    && apt-get install -y build-essential default-libmysqlclient-dev gcc \
-    && apt-get clean
+# Install system dependencies for mysqlclient
+RUN apt-get update && \
+    apt-get install -y gcc default-libmysqlclient-dev pkg-config && \
+    apt-get clean
 
-# Copy project files
-COPY . /app/
-
-# Install dependencies
+# Install pipenv or requirements (if using requirements.txt)
+COPY requirements.txt .
 RUN pip install --upgrade pip
 RUN pip install -r requirements.txt
 
-# Expose port 8000 for Django
+# Copy project files
+COPY . .
+
+# Expose port (optional, depending on your run setup)
 EXPOSE 8000
 
-# Start Gunicorn server
-CMD ["gunicorn", "authentication.wsgi:application", "--bind", "0.0.0.0:8000"]
+# Default command
+CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]
