@@ -9,12 +9,7 @@ ENV PYTHONUNBUFFERED=1
 WORKDIR /app
 
 # Install build dependencies for mysqlclient
-RUN apt-get update && \
-    apt-get install -y gcc g++ \
-    default-libmysqlclient-dev libmysqlclient-dev \
-    build-essential pkg-config && \
-    apt-get clean && \
-    rm -rf /var/lib/apt/lists/*
+
 
 # Install Python dependencies
 COPY requirements.txt .
