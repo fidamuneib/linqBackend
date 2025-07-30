@@ -1,0 +1,9 @@
+services:
+  - type: web
+    name: linq-backend
+    env: docker
+    plan: free
+    repo: https://github.com/fidamuneib/linqBackend
+    dockerfilePath: ./Dockerfile
+    branch: main
+    healthCheckPath: /
