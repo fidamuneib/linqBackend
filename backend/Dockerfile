@@ -1,5 +1,5 @@
-# Use Python slim image
-FROM python:3.12-slim
+# Use full Python base image, not slim
+FROM python:3.12
 
 # Set environment variables
 ENV PYTHONDONTWRITEBYTECODE=1
@@ -8,12 +8,11 @@ ENV PYTHONUNBUFFERED=1
 # Set working directory
 WORKDIR /app
 
-# Install system dependencies for mysqlclient
+# Install build dependencies for mysqlclient
 RUN apt-get update && \
     apt-get install -y gcc g++ \
-    libmysqlclient-dev default-libmysqlclient-dev \
-    build-essential pkg-config \
-    curl && \
+    default-libmysqlclient-dev libmysqlclient-dev \
+    build-essential pkg-config && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 
@@ -22,11 +21,11 @@ COPY requirements.txt .
 RUN pip install --upgrade pip
 RUN pip install -r requirements.txt
 
-# Copy all source files
+# Copy project files
 COPY . .
 
-# Port (optional)
+# Expose the default Django port
 EXPOSE 8000
 
-# Default start command
+# Run the Django development server
 CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]
